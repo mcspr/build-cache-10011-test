@@ -16,7 +16,7 @@ jobs:
         python -mpip install platformio
         echo '#!/bin/bash' > run.sh
         echo 'set -e -o pipefail' >> run.sh
-        echo 'platformio run --verbose --environment $1 | grep -E "Retrieved|xtensa-esp32-elf"' >> run.sh
+        echo 'platformio run --verbose --environment $1' >> run.sh
         chmod +x run.sh
     - name: run things
       run: |
