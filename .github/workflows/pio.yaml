@@ -14,9 +14,9 @@ jobs:
     - name: install runner
       run: |
         python -mpip install platformio
-        echo '#!/bin/sh' > run.sh
+        echo '#!/bin/bash' > run.sh
         echo 'set -e -o pipefail' >> run.sh
-        echo 'platformio run --verbose --environment $1 | grep -E "Retrieved|Compiling"' >> run.sh
+        echo 'platformio run --verbose --environment $1 | grep -E "Retrieved|xtensa-esp32-elf"' >> run.sh
         chmod +x run.sh
     - name: run things the first time
       run: |
