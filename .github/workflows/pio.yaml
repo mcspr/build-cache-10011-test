@@ -18,30 +18,14 @@ jobs:
         echo 'set -e -o pipefail' >> run.sh
         echo 'platformio run --verbose --environment $1 | grep -E "Retrieved|xtensa-esp32-elf"' >> run.sh
         chmod +x run.sh
-    - name: run things the first time
+    - name: run things
       run: |
         mkdir cache
         find cache > empty.list
         ./run.sh one
-        find cache > after_one_1.list
-        diff -u empty.list after_one_1.list || true
+        mv cache cache_one
         ./run.sh two
-        find cache > after_two_1.list
-        diff -u after_one_1.list after_two_1.list || true
-    - name: run things again
-      run: |
+        diff -ru cache_one cache || true
+        rm -rf .pio/build/one
         ./run.sh one
-        find cache > after_one_2.list
-        diff -u after_two_1.list after_one_1.list || true
-        ./run.sh two
-        find cache > after_two_2.list
-        diff -u after_one_2.list after_two_2.list || true
-    - name: remove build dir and run
-      run: |
-        rm -rf .pio/build/
-        ./run.sh one
-        find cache > after_one_3.list
-        diff -u after_two_2.list after_one_3.list || true
-        ./run.sh two
-        find cache > after_two_3.list
-        diff -u after_one_3.list after_two_3.list || true
+        diff -ru cache_one cache || true
