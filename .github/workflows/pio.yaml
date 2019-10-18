@@ -15,14 +15,29 @@ jobs:
         python -mpip install platformio
     - name: run things the first time
       run: |
+        find
+        mkdir cache
+        find cache > 1.list
         platformio run --verbose --environment one
+        find cache > 2.list
+        diff -u 1.list 2.list
         platformio run --verbose --environment two
+        find cache > 3.list
+        diff -u 2.list 3.list
     - name: run things again
       run: |
         platformio run --verbose --environment one
+        find cache > 4.list
+        diff -u 3.list 4.list
         platformio run --verbose --environment two
+        find cache > 5.list
+        diff -u 4.list 5.list
     - name: remove build dir and run
       run: |
         rm -rf .pio/build/
         platformio run --verbose --environment one
+        find cache > 5.list
+        diff -u 4.list 5.list
         platformio run --verbose --environment two
+        find cache > 6.list
+        diff -u 5.list 6.list
