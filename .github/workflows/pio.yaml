@@ -6,6 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v1
     - name: install python
       uses: actions/setup-python@v1
       with:
@@ -15,7 +16,6 @@ jobs:
         python -mpip install platformio
     - name: run things the first time
       run: |
-        find
         mkdir cache
         find cache > 1.list
         platformio run --verbose --environment one
