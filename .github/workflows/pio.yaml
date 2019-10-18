@@ -1,0 +1,28 @@
+name: pio run test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: install python
+      uses: actions/setup-python@v1
+      with:
+          python-version: 3.7
+    - name: install pio
+      run: |
+        python -mpip install platformio
+    - name: run things the first time
+      run: |
+        platformio run --verbose --environment one
+        platformio run --verbose --environment two
+    - name: run things again
+      run: |
+        platformio run --verbose --environment one
+        platformio run --verbose --environment two
+    - name: remove build dir and run
+      run: |
+        rm -rf .pio/build/
+        platformio run --verbose --environment one
+        platformio run --verbose --environment two
