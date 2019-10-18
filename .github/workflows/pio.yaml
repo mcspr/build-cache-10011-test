@@ -11,33 +11,37 @@ jobs:
       uses: actions/setup-python@v1
       with:
           python-version: 3.7
-    - name: install pio
+    - name: install runner
       run: |
         python -mpip install platformio
+        echo '#!/bin/sh' > run.sh
+        echo 'set -e -o pipefail' >> run.sh
+        echo 'platformio run --verbose --environment $1 | grep -E "Retrieved|Compiling"' >> run.sh
+        chmod +x run.sh
     - name: run things the first time
       run: |
         mkdir cache
-        find cache > 1.list
-        platformio run --verbose --environment one
-        find cache > 2.list
-        diff -u 1.list 2.list
-        platformio run --verbose --environment two
-        find cache > 3.list
-        diff -u 2.list 3.list
+        find cache > empty.list
+        ./run.sh one
+        find cache > after_one_1.list
+        diff -u empty.list after_one_1.list || true
+        ./run.sh two
+        find cache > after_two_1.list
+        diff -u after_one_1.list after_two_1.list || true
     - name: run things again
       run: |
-        platformio run --verbose --environment one
-        find cache > 4.list
-        diff -u 3.list 4.list
-        platformio run --verbose --environment two
-        find cache > 5.list
-        diff -u 4.list 5.list
+        ./run.sh one
+        find cache > after_one_2.list
+        diff -u after_two_1.list after_one_1.list || true
+        ./run.sh two
+        find cache > after_two_2.list
+        diff -u after_one_2.list after_two_2.list || true
     - name: remove build dir and run
       run: |
         rm -rf .pio/build/
-        platformio run --verbose --environment one
-        find cache > 5.list
-        diff -u 4.list 5.list
-        platformio run --verbose --environment two
-        find cache > 6.list
-        diff -u 5.list 6.list
+        ./run.sh one
+        find cache > after_one_3.list
+        diff -u after_two_2.list after_one_3.list || true
+        ./run.sh two
+        find cache > after_two_3.list
+        diff -u after_one_3.list after_two_3.list || true
