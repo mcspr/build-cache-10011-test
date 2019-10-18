@@ -25,7 +25,14 @@ jobs:
         ./run.sh one
         mv cache cache_one
         ./run.sh two
-        diff -ru cache_one cache || true
+        mv cache cache_two
+        (diff -sru cache_one cache_two || true) > cache_one_vs_cache_two.diff
         rm -rf .pio/build/one
         ./run.sh one
-        diff -ru cache_one cache || true
+        (diff -sru cache_one cache || true) > cache_one_vs_cache_one.diff
+    - name: show diffs
+      run: |
+        echo "1vs2  -----------------"
+        cat cache_one_vs_cache_two.diff
+        echo "1vs1(again)-----------------"
+        cat cache_one_vs_cache_one.diff
